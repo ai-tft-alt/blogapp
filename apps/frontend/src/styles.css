@@ -153,6 +153,19 @@ main.container {
   background: var(--color-danger);
 }
 
+.like {
+  margin: 16px 0;
+}
+
+.like-button {
+  border-radius: 999px;
+}
+
+.like-button[aria-pressed='true'] {
+  border-color: #e11d48;
+  color: #e11d48;
+}
+
 .btn-small {
   padding: 2px 10px;
   font-size: 0.85rem;

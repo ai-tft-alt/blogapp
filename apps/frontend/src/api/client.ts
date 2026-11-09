@@ -2,6 +2,7 @@ import type {
   ApiFailure,
   AuthResult,
   Comment,
+  LikeStatus,
   LoginInput,
   PaginatedPosts,
   Post,
@@ -66,6 +67,8 @@ export const api = {
   updatePost: (id: number, input: Partial<PostInput>) =>
     request<Post>(`/posts/${id}`, { method: 'PUT', body: JSON.stringify(input) }),
   deletePost: (id: number) => request<void>(`/posts/${id}`, { method: 'DELETE' }),
+  likePost: (id: number) => request<LikeStatus>(`/posts/${id}/like`, { method: 'PUT' }),
+  unlikePost: (id: number) => request<LikeStatus>(`/posts/${id}/like`, { method: 'DELETE' }),
 
   listComments: (postId: number) => request<Comment[]>(`/posts/${postId}/comments`),
   createComment: (postId: number, content: string) =>

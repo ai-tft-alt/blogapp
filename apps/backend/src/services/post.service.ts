@@ -3,12 +3,16 @@ import { prisma } from '../lib/prisma.js';
 import { forbidden, notFound } from '../lib/http-error.js';
 import { postInclude, toPost } from './mappers.js';
 
-export async function listPublished(page: number, limit: number): Promise<PaginatedPosts> {
+export async function listPublished(
+  page: number,
+  limit: number,
+  viewerId?: number,
+): Promise<PaginatedPosts> {
   const where = { status: 'PUBLISHED' };
   const [rows, total] = await Promise.all([
     prisma.post.findMany({
       where,
-      include: postInclude,
+      include: postInclude(viewerId),
       orderBy: [{ createdAt: 'desc' }, { id: 'desc' }],
       skip: (page - 1) * limit,
       take: limit,
@@ -24,14 +28,14 @@ export async function listPublished(page: number, limit: number): Promise<Pagina
 export async function listMine(userId: number): Promise<Post[]> {
   const rows = await prisma.post.findMany({
     where: { authorId: userId },
-    include: postInclude,
+    include: postInclude(userId),
     orderBy: [{ createdAt: 'desc' }, { id: 'desc' }],
   });
   return rows.map(toPost);
 }
 
 export async function getPost(id: number, viewerId?: number): Promise<Post> {
-  const row = await prisma.post.findUnique({ where: { id }, include: postInclude });
+  const row = await prisma.post.findUnique({ where: { id }, include: postInclude(viewerId) });
   if (!row) throw notFound('게시물을 찾을 수 없습니다.');
   if (row.status !== 'PUBLISHED' && row.authorId !== viewerId) {
     throw notFound('게시물을 찾을 수 없습니다.');
@@ -48,7 +52,7 @@ export async function createPost(userId: number, input: PostInput): Promise<Post
       status: input.status ?? 'DRAFT',
       authorId: userId,
     },
-    include: postInclude,
+    include: postInclude(userId),
   });
   return toPost(row);
 }
@@ -73,7 +77,7 @@ export async function updatePost(
       imageUrl: input.imageUrl,
       status: input.status,
     },
-    include: postInclude,
+    include: postInclude(userId),
   });
   return toPost(row);
 }
