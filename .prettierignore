@@ -1,0 +1,8 @@
+node_modules
+dist
+coverage
+logs
+pnpm-lock.yaml
+apps/backend/prisma/migrations
+apps/backend/uploads
+BLOGAPP_SPEC.md
