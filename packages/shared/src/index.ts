@@ -16,8 +16,15 @@ export interface Post {
   authorId: number;
   authorName: string;
   commentCount: number;
+  likeCount: number;
+  likedByMe: boolean;
   createdAt: string;
   updatedAt: string;
+}
+
+export interface LikeStatus {
+  likeCount: number;
+  likedByMe: boolean;
 }
 
 export interface Comment {

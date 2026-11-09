@@ -137,10 +137,23 @@ const commentPlan: [number, number][] = [
   [11, 1],
 ];
 
+// [postId, userId] — PUBLISHED 글에만 좋아요를 단다.
+const likePlan: [number, number][] = [
+  [1, 2],
+  [2, 2],
+  [3, 1],
+  [3, 2],
+  [7, 2],
+  [8, 1],
+  [8, 2],
+  [11, 1],
+];
+
 async function main() {
   const passwordHash = await bcrypt.hash('password123', 10);
 
   await prisma.$transaction([
+    prisma.like.deleteMany(),
     prisma.comment.deleteMany(),
     prisma.post.deleteMany(),
     prisma.user.deleteMany(),
@@ -169,8 +182,14 @@ async function main() {
     });
   }
 
+  for (const [index, [postId, userId]] of likePlan.entries()) {
+    await prisma.like.create({
+      data: { postId, userId, createdAt: at(24 * postId + 12 + index) },
+    });
+  }
+
   console.log(
-    `[seed] 사용자 ${users.length}명, 게시물 ${posts.length}개, 댓글 ${commentPlan.length}개 투입 완료`,
+    `[seed] 사용자 ${users.length}명, 게시물 ${posts.length}개, 댓글 ${commentPlan.length}개, 좋아요 ${likePlan.length}개 투입 완료`,
   );
 }
 
