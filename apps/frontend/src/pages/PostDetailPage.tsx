@@ -5,6 +5,7 @@ import { api } from '../api/client';
 import { useAuth } from '../auth/AuthContext';
 import { CommentForm } from '../components/CommentForm';
 import { CommentList } from '../components/CommentList';
+import { LikeButton } from '../components/LikeButton';
 import { formatDate } from '../components/PostCard';
 
 export function PostDetailPage() {
@@ -64,6 +65,12 @@ export function PostDetailPage() {
       </div>
       {post.imageUrl && <img className="post-image" src={post.imageUrl} alt={post.title} />}
       <div className="post-content">{post.content}</div>
+      <LikeButton
+        postId={post.id}
+        likeCount={post.likeCount}
+        likedByMe={post.likedByMe}
+        onChange={(status) => setPost({ ...post, ...status })}
+      />
       {isAuthor && (
         <div className="actions">
           <Link to={`/editor/${post.id}`} className="btn btn-ghost" aria-label="글 수정">

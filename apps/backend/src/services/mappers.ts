@@ -17,7 +17,8 @@ interface PostRow {
   createdAt: Date;
   updatedAt: Date;
   author: { name: string };
-  _count: { comments: number };
+  _count: { comments: number; likes: number };
+  likes: { userId: number }[];
 }
 
 interface CommentRow {
@@ -43,6 +44,8 @@ export function toPost(row: PostRow): Post {
     authorId: row.authorId,
     authorName: row.author.name,
     commentCount: row._count.comments,
+    likeCount: row._count.likes,
+    likedByMe: row.likes.length > 0,
     createdAt: row.createdAt.toISOString(),
     updatedAt: row.updatedAt.toISOString(),
   };
@@ -59,7 +62,11 @@ export function toComment(row: CommentRow): Comment {
   };
 }
 
-export const postInclude = {
-  author: { select: { name: true } },
-  _count: { select: { comments: true } },
-} as const;
+// viewerId가 없으면 존재하지 않는 id(-1)로 걸러 likes가 항상 빈 배열이 된다.
+export function postInclude(viewerId?: number) {
+  return {
+    author: { select: { name: true } },
+    _count: { select: { comments: true, likes: true } },
+    likes: { where: { userId: viewerId ?? -1 }, select: { userId: true } },
+  } as const;
+}

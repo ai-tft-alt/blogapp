@@ -11,6 +11,7 @@ describe('posts', () => {
       expect(post.status).toBe('PUBLISHED');
       expect(post.authorName).toEqual(expect.any(String));
       expect(post.commentCount).toEqual(expect.any(Number));
+      expect(post.likeCount).toEqual(expect.any(Number));
     }
     const dates = res.body.data.items.map((p: { createdAt: string }) => p.createdAt);
     expect([...dates].sort().reverse()).toEqual(dates);

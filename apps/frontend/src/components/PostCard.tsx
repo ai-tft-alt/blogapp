@@ -22,6 +22,7 @@ export function PostCard({ post }: { post: Post }) {
         <span>{post.authorName}</span>
         <span>{formatDate(post.createdAt)}</span>
         <span>댓글 {post.commentCount}</span>
+        <span>좋아요 {post.likeCount}</span>
       </div>
     </article>
   );
